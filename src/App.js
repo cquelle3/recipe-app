@@ -46,11 +46,12 @@ import { Form, InputGroup } from 'react-bootstrap';
 
 
 function App() {
-  const [recipeData, setRecipeData] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [recipeData, setRecipeData] = useState({'results': []});
 
   function searchRecipes(){
     fetch(
-      `https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=pasta&addRecipeInformation=true`
+      'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + searchInput + '&addRecipeInformation=true'
     )
     .then(response => response.json())
     .then(data => {
@@ -62,25 +63,39 @@ function App() {
     });
   }
 
+  const onSearchChange = (e) => {
+    setSearchInput(e.target.value);
+  }
 
   return (
-      <InputGroup>
-        <Form.Control placeholder='Recipe Search' aria-label='Recipe Search'/>
-        <Button variant='outline-primary'>Search</Button>
-      </InputGroup>
-      /* <Card className='recipe-card'>
-        <Card.Header>Recipe</Card.Header>
-        <Card.Img src=''></Card.Img>
-        <Card.Body>
-          <Card.Title>Card Title</Card.Title>
-          <Card.Subtitle className='mb-2 text-muted'>Card Subtitle</Card.Subtitle>
-          <Card.Text>
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
-          </Card.Text>
-          <Button variant='primary' onClick={searchRecipes}>Recipe Search</Button>
-        </Card.Body>
-      </Card> */
+      <>
+        <div className='search-bar-container'>
+          <InputGroup className='search-bar'>
+            <Form.Control placeholder='Recipe Search' aria-label='Recipe Search' onChange={onSearchChange}/>
+            <Button variant='outline-primary' onClick={searchRecipes}>Search</Button>
+          </InputGroup>
+        </div>
+        
+        <div className='recipe-results-container'>
+          <div className='recipe-results'>
+            {recipeData['results'].map((recipe) => (
+              <div className='recipe-result'>
+                <Card className='recipe-card'>
+                  <Card.Header>{recipe['title']}</Card.Header>
+                  <Card.Img src={recipe['image']}></Card.Img>
+                  <Card.Body>
+                    <Card.Text dangerouslySetInnerHTML={{ __html: recipe['summary'] }}>
+                    </Card.Text>
+                    <a href={recipe['sourceUrl']} target='_blank'>
+                      <Button variant='primary'>Link</Button>
+                    </a>
+                  </Card.Body>
+                </Card>
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
   )
 }
 
