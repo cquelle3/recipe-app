@@ -48,14 +48,24 @@ import { Form, InputGroup } from 'react-bootstrap';
 function App() {
   const [searchInput, setSearchInput] = useState("");
   const [recipeData, setRecipeData] = useState({'results': []});
+  const [recipeNumber, setRecipeNumber] = useState(0);
+  const [recipeNumRes, setRecipeNumRes] = useState(0);
+  const [recipeOffset, setRecipeOffset] = useState(0);
+
+  const animDuration = 1000;
+  const animDelay = 250;
 
   function searchRecipes(){
+    setRecipeData({'results': []});
     fetch(
       'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + searchInput + '&addRecipeInformation=true'
     )
     .then(response => response.json())
     .then(data => {
       setRecipeData(data);
+      setRecipeNumber(data['number']);
+      setRecipeNumRes(data['totalResults']);
+      setRecipeOffset(data['offset']);
       console.log(data);
     })
     .catch(() => {
@@ -63,8 +73,21 @@ function App() {
     });
   }
 
+  function onTab(tabIndex){
+    console.log(tabIndex);
+  }
+
   const onSearchChange = (e) => {
     setSearchInput(e.target.value);
+  }
+
+  const animString = (i) => `fadeIn ${animDuration}ms ease-out ${animDelay * (i + 1)}ms forwards`;
+
+  const tabs = [];
+  for(let i = 0; i < (recipeNumRes / recipeNumber); i++){
+    tabs.push(
+      <Button onClick={() => onTab(i)}>{i + 1}</Button>
+    )
   }
 
   return (
@@ -76,10 +99,14 @@ function App() {
           </InputGroup>
         </div>
         
+        <div>
+          {tabs}
+        </div>
+
         <div className='recipe-results-container'>
           <div className='recipe-results'>
-            {recipeData['results'].map((recipe) => (
-              <div className='recipe-result'>
+            {recipeData['results'].map((recipe, i) => (
+              <div key={i} className='recipe-result' style={{ animation: animString(i) }}>
                 <Card className='recipe-card'>
                   <Card.Header>{recipe['title']}</Card.Header>
                   <Card.Img src={recipe['image']}></Card.Img>
