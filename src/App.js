@@ -109,7 +109,7 @@ function App() {
   for(let i = 0; i < (recipeNumRes / recipeNumber); i++){
     tabs.push(
       <div className='tab'>
-        <Button className='tab-button' onClick={() => onTab(i)}>{i + 1}</Button>
+        <Button className='tab-button' variant={i === currTab ? 'primary' : 'light'} onClick={() => onTab(i)}>{i + 1}</Button>
       </div>
     )
   }
