@@ -2,7 +2,7 @@ import './App.css';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { useState } from 'react';
-import { Form, InputGroup } from 'react-bootstrap';
+import { Alert, Form, InputGroup } from 'react-bootstrap';
 
 // function ItemRow({ item }) {
 //   return (
@@ -44,35 +44,42 @@ import { Form, InputGroup } from 'react-bootstrap';
 // ];
 
 
-
 function App() {
   const [searchInput, setSearchInput] = useState("");
   const [recipeData, setRecipeData] = useState({'results': []});
-  const [recipeNumber, setRecipeNumber] = useState(0);
+  const [recipeNumber, setRecipeNumber] = useState(25);
   const [recipeNumRes, setRecipeNumRes] = useState(0);
   const [recipeOffset, setRecipeOffset] = useState(0);
   const [savedSearch, setSavedSearch] = useState(0);
   const [currTab, setCurrTab] = useState(0);
+  const [apiLimitReached, setApiLimitReached] = useState(false);
 
   const animDuration = 500;
   const animDelay = 100;
+  const addRecipeInformation = true;
 
   function searchRecipes(){
     setRecipeData({'results': []});
     fetch(
-      'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + searchInput + '&addRecipeInformation=true'
+      'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + searchInput + '&addRecipeInformation=' + addRecipeInformation + '&number=' + recipeNumber
     )
     .then(response => response.json())
     .then(data => {
-      setRecipeData(data);
-      setRecipeNumber(data['number']);
-      setRecipeNumRes(data['totalResults']);
-      setRecipeOffset(data['offset']);
-      setSavedSearch(searchInput);
-      setCurrTab(0);
-      console.log(data);
+      if(data['code'] != 402){
+        setRecipeData(data);
+        setRecipeNumber(data['number']);
+        setRecipeNumRes(data['totalResults']);
+        setRecipeOffset(data['offset']);
+        setSavedSearch(searchInput);
+        setCurrTab(0);
+        setApiLimitReached(false);
+      }
+      else{
+        setApiLimitReached(true);
+      }
     })
-    .catch(() => {
+    .catch((error) => {
+      console.log(error);
       console.log("error getting recipe data")
     });
   }
@@ -82,18 +89,24 @@ function App() {
       setCurrTab(tabIndex);
       setRecipeData({'results': []});
       fetch(
-        'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + savedSearch + '&addRecipeInformation=true&offset=' + (tabIndex * 10)
+        'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + savedSearch + '&addRecipeInformation=' + addRecipeInformation + '&number=' + recipeNumber + '&offset=' + (tabIndex * recipeNumber)
       )
       .then(response => response.json())
       .then(data => {
-        setRecipeData(data);
-        setRecipeNumber(data['number']);
-        setRecipeNumRes(data['totalResults']);
-        setRecipeOffset(data['offset']);
-        setSavedSearch(searchInput);
-        console.log(data);
+        if(data['code'] != 402){
+          setRecipeData(data);
+          setRecipeNumber(data['number']);
+          setRecipeNumRes(data['totalResults']);
+          setRecipeOffset(data['offset']);
+          setSavedSearch(searchInput);
+          setApiLimitReached(false);
+        }
+        else{
+          setApiLimitReached(true);
+        }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
         console.log("error getting recipe data")
       });
     }
@@ -117,10 +130,15 @@ function App() {
   return (
       <>
         <div className='search-bar-container'>
-          <InputGroup className='search-bar'>
-            <Form.Control placeholder='Recipe Search' aria-label='Recipe Search' onChange={onSearchChange}/>
-            <Button variant='outline-primary' onClick={searchRecipes}>Search</Button>
-          </InputGroup>
+          <div className='search-bar'>
+            <InputGroup className='search'>
+              <Form.Control placeholder='Recipe Search' aria-label='Recipe Search' onChange={onSearchChange}/>
+              <Button variant='outline-primary' onClick={searchRecipes}>Search</Button>
+            </InputGroup>
+          </div>
+          <div className='api-alert'>
+            <Alert variant='primary' show={apiLimitReached}>The Recipe API has exceeded it's maximum number of requests today. Sorry!</Alert>
+          </div>
         </div>
         
         <div className='tabs-container'>

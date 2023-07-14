@@ -16,13 +16,22 @@
   width: 100%;
   height: 10rem;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .search-bar{
   width: 50% !important;
+}
+
+.search{
   height: 3rem !important;
+}
+
+.api-alert{
+  width: 30%;
+  padding-top: 1rem;
 }
 
 .tabs-container{
