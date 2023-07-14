@@ -51,9 +51,11 @@ function App() {
   const [recipeNumber, setRecipeNumber] = useState(0);
   const [recipeNumRes, setRecipeNumRes] = useState(0);
   const [recipeOffset, setRecipeOffset] = useState(0);
+  const [savedSearch, setSavedSearch] = useState(0);
+  const [currTab, setCurrTab] = useState(0);
 
-  const animDuration = 1000;
-  const animDelay = 250;
+  const animDuration = 500;
+  const animDelay = 100;
 
   function searchRecipes(){
     setRecipeData({'results': []});
@@ -66,6 +68,8 @@ function App() {
       setRecipeNumber(data['number']);
       setRecipeNumRes(data['totalResults']);
       setRecipeOffset(data['offset']);
+      setSavedSearch(searchInput);
+      setCurrTab(0);
       console.log(data);
     })
     .catch(() => {
@@ -74,7 +78,25 @@ function App() {
   }
 
   function onTab(tabIndex){
-    console.log(tabIndex);
+    if(tabIndex != currTab){
+      setCurrTab(tabIndex);
+      setRecipeData({'results': []});
+      fetch(
+        'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + savedSearch + '&addRecipeInformation=true&offset=' + (tabIndex * 10)
+      )
+      .then(response => response.json())
+      .then(data => {
+        setRecipeData(data);
+        setRecipeNumber(data['number']);
+        setRecipeNumRes(data['totalResults']);
+        setRecipeOffset(data['offset']);
+        setSavedSearch(searchInput);
+        console.log(data);
+      })
+      .catch(() => {
+        console.log("error getting recipe data")
+      });
+    }
   }
 
   const onSearchChange = (e) => {
@@ -86,7 +108,9 @@ function App() {
   const tabs = [];
   for(let i = 0; i < (recipeNumRes / recipeNumber); i++){
     tabs.push(
-      <Button onClick={() => onTab(i)}>{i + 1}</Button>
+      <div className='tab'>
+        <Button className='tab-button' onClick={() => onTab(i)}>{i + 1}</Button>
+      </div>
     )
   }
 
@@ -99,7 +123,7 @@ function App() {
           </InputGroup>
         </div>
         
-        <div>
+        <div className='tabs-container'>
           {tabs}
         </div>
 

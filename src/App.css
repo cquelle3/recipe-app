@@ -25,6 +25,25 @@
   height: 3rem !important;
 }
 
+.tabs-container{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5rem;
+  padding-bottom: 2rem;
+}
+
+.tab{
+  padding: 0.5rem;
+}
+
+.tab-button{
+  border-radius: 50% !important;
+  width: 3rem !important;
+  height: 3rem !important;
+}
+
 .recipe-results-container{
   width: 100%;
   display: flex;
