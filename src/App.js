@@ -112,6 +112,12 @@ function App() {
     }
   }
 
+  function searchKeyPress(key){
+    if(key.code == "Enter"){
+      searchRecipes();
+    }
+  }
+
   const onSearchChange = (e) => {
     setSearchInput(e.target.value);
   }
@@ -132,7 +138,7 @@ function App() {
         <div className='search-bar-container'>
           <div className='search-bar'>
             <InputGroup className='search'>
-              <Form.Control placeholder='Recipe Search' aria-label='Recipe Search' onChange={onSearchChange}/>
+              <Form.Control placeholder='Recipe Search' aria-label='Recipe Search' onChange={onSearchChange} onKeyUp={(key) => searchKeyPress(key)}/>
               <Button variant='outline-primary' onClick={searchRecipes}>Search</Button>
             </InputGroup>
           </div>
