@@ -77,7 +77,7 @@ function App() {
         setSavedSearch(searchInput);
         setApiLimitReached(false);
 
-        if(recipeData.length <= recipeNumRes){
+        if(data['results'].length < data['totalResults']){
           setShowMoreRes(true);
         }
       }
@@ -92,10 +92,13 @@ function App() {
   }
 
   function moreResults(){
-    setMoreResCount(moreResCount + 1);
-    let offset = recipeNumber * moreResCount; 
+    let offset = recipeNumber * (moreResCount + 1); 
+    let number = recipeNumber;
+    if(recipeNumRes - recipeData.length < recipeNumber){
+      number = recipeNumRes - recipeData.length;
+    }
     fetch(
-      'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + savedSearch + '&addRecipeInformation=' + addRecipeInformation + '&number=' + recipeNumber + '&offset=' + offset
+      'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + savedSearch + '&addRecipeInformation=' + addRecipeInformation + '&number=' + number + '&offset=' + offset
     )
     .then(response => response.json())
     .then(data => {
@@ -104,9 +107,13 @@ function App() {
         setRecipeData(newData);
         setSavedSearch(searchInput);
         setApiLimitReached(false);
+        setMoreResCount(moreResCount + 1);
 
-        if(recipeData.length <= recipeNumRes){
+        if(newData.length < recipeNumRes){
           setShowMoreRes(true);
+        }
+        else{
+          setShowMoreRes(false);
         }
       }
       else{
