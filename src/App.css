@@ -72,3 +72,26 @@
   padding: 1rem;
   opacity: 0;
 }
+
+.more-results{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 5rem;
+}
+
+.more-results-button{
+  border-radius: 50%;
+  width: clamp(15rem, 30%, 30rem) !important;
+}
+
+@media only screen and (max-width: 1000px){
+  .recipe-card{
+    width: 20rem !important;
+  }
+
+  .search-bar{
+    width: 75% !important;
+  }
+}
