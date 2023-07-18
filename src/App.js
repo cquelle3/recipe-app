@@ -49,7 +49,6 @@ function App() {
   const [recipeData, setRecipeData] = useState([]);
   const [recipeNumber, setRecipeNumber] = useState(25);
   const [recipeNumRes, setRecipeNumRes] = useState(0);
-  const [recipeOffset, setRecipeOffset] = useState(0);
   const [savedSearch, setSavedSearch] = useState(0);
   const [moreResCount, setMoreResCount] = useState(0);
 
@@ -69,11 +68,9 @@ function App() {
     .then(response => response.json())
     .then(data => {
       if(data['code'] !== 402){
-        console.log(data);
         setRecipeData(data['results']);
         setRecipeNumber(data['number']);
         setRecipeNumRes(data['totalResults']);
-        setRecipeOffset(data['offset']);
         setSavedSearch(searchInput);
         setApiLimitReached(false);
 
