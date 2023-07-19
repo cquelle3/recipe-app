@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { useState } from 'react';
 import { Alert, Form, InputGroup } from 'react-bootstrap';
+import { BiChevronDown } from "react-icons/bi";
 
 // function ItemRow({ item }) {
 //   return (
@@ -43,20 +44,62 @@ import { Alert, Form, InputGroup } from 'react-bootstrap';
 //   {name: "Milk", price: "4$"}
 // ];
 
+function RecipeCard({ recipe, index, recipeNumber }) {
+  const animDuration = 500;
+  const animDelay = 100;
 
-function App() {
+  const animString = (i) => {
+    if(i >= recipeNumber){
+      i = i % recipeNumber;
+    }
+    return `fadeIn ${animDuration}ms ease-out ${animDelay * (i + 1)}ms forwards`;
+  }
+
+  return (
+      <div className='recipe-result' style={{ animation: animString(index) }}>
+        <Card className='recipe-card'>
+          <Card.Header>{recipe['title']}</Card.Header>
+          <Card.Img src={recipe['image']}></Card.Img>
+          <Card.Body>
+            <Card.Text dangerouslySetInnerHTML={{ __html: recipe['summary'] }}>
+            </Card.Text>
+            <a href={recipe['sourceUrl']} target='_blank' rel='noreferrer'>
+              <Button variant='primary'>Link</Button>
+            </a>
+          </Card.Body>
+        </Card>
+      </div>
+  );
+}
+
+function RecipeResults({ recipeData, recipeNumber }) {
+  const recipeCards = [];
+
+  recipeData.forEach((recipe, i) => {
+    recipeCards.push(
+      <RecipeCard recipe={recipe} index={i} recipeNumber={recipeNumber} key={recipe['title']}/>
+    );
+  })
+
+  return (
+    <div className='recipe-results-container'>
+      <div className='recipe-results'>
+        {recipeCards}
+      </div>
+    </div>
+  )
+}
+
+function RecipeSearch() {
   const [searchInput, setSearchInput] = useState("");
   const [recipeData, setRecipeData] = useState([]);
   const [recipeNumber, setRecipeNumber] = useState(25);
   const [recipeNumRes, setRecipeNumRes] = useState(0);
   const [savedSearch, setSavedSearch] = useState(0);
   const [moreResCount, setMoreResCount] = useState(0);
-
   const [showMoreRes, setShowMoreRes] = useState(false);
   const [apiLimitReached, setApiLimitReached] = useState(false);
 
-  const animDuration = 500;
-  const animDelay = 100;
   const addRecipeInformation = true;
 
   function searchRecipes(){
@@ -133,17 +176,10 @@ function App() {
     setSearchInput(e.target.value);
   }
 
-  const animString = (i) => {
-    if(i >= recipeNumber){
-      i = i % recipeNumber;
-    }
-    return `fadeIn ${animDuration}ms ease-out ${animDelay * (i + 1)}ms forwards`;
-  }
-
   let showMore = null;
   if(showMoreRes){
     showMore = <div className='more-results'>
-                  <Button className='more-results-button' variant='light' onClick={moreResults}>More results</Button>
+                  <Button className='more-results-button' variant='light' onClick={moreResults}>More results <BiChevronDown/></Button>
                 </div>
   }
 
@@ -161,28 +197,16 @@ function App() {
           </div>
         </div>
 
-        <div className='recipe-results-container'>
-          <div className='recipe-results'>
-            {recipeData.map((recipe, i) => (
-              <div key={i} className='recipe-result' style={{ animation: animString(i) }}>
-                <Card className='recipe-card'>
-                  <Card.Header>{recipe['title']}</Card.Header>
-                  <Card.Img src={recipe['image']}></Card.Img>
-                  <Card.Body>
-                    <Card.Text dangerouslySetInnerHTML={{ __html: recipe['summary'] }}>
-                    </Card.Text>
-                    <a href={recipe['sourceUrl']} target='_blank' rel='noreferrer'>
-                      <Button variant='primary'>Link</Button>
-                    </a>
-                  </Card.Body>
-                </Card>
-              </div>
-            ))}
-          </div>
-        </div>
+        <RecipeResults recipeData={recipeData} recipeNumber={recipeNumber}/>
 
         {showMore}
       </>
+  )
+}
+
+function App() {
+  return (
+    <RecipeSearch />
   )
 }
 
