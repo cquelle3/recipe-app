@@ -3,46 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { useState } from 'react';
 import { Alert, Form, InputGroup } from 'react-bootstrap';
-import { BiChevronDown } from "react-icons/bi";
-
-// function ItemRow({ item }) {
-//   return (
-//     <tr>
-//       <td>{item.name}</td>
-//       <td>{item.price}</td>
-//     </tr>
-//   );
-// }
-
-// function ItemTable({ items }) {
-//   const rows = [];
-
-//   items.forEach((item) => {
-//     rows.push(
-//       <ItemRow item={item} key={item.name} />
-//     );
-//   });
-
-//   return (
-//     <table>
-//       <thead>
-//         <tr>
-//           <th>Name</th>
-//           <th>Price</th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//         {rows}
-//       </tbody>
-//     </table>
-//   );
-// }
-
-// const ITEMS = [
-//   {name: "Cheerios", price: "5$"},
-//   {name: "Apple", price: "1$"},
-//   {name: "Milk", price: "4$"}
-// ];
+import { BiChevronDown, BiRestaurant, BiFoodMenu } from "react-icons/bi";
 
 function RecipeCard({ recipe, index, recipeNumber }) {
   const animDuration = 500;
@@ -64,7 +25,7 @@ function RecipeCard({ recipe, index, recipeNumber }) {
             <Card.Text dangerouslySetInnerHTML={{ __html: recipe['summary'] }}>
             </Card.Text>
             <a href={recipe['sourceUrl']} target='_blank' rel='noreferrer'>
-              <Button variant='primary'>Link</Button>
+              <Button variant='primary'>Recipe <BiFoodMenu/></Button>
             </a>
           </Card.Body>
         </Card>
@@ -189,7 +150,7 @@ function RecipeSearch() {
           <div className='search-bar'>
             <InputGroup className='search'>
               <Form.Control placeholder='Recipe Search' aria-label='Recipe Search' onChange={onSearchChange} onKeyUp={(key) => searchKeyPress(key)}/>
-              <Button variant='outline-primary' onClick={searchRecipes}>Search</Button>
+              <Button variant='outline-primary' onClick={searchRecipes}><BiRestaurant/> Search</Button>
             </InputGroup>
           </div>
           <div className='api-alert'>
@@ -206,7 +167,7 @@ function RecipeSearch() {
 
 function App() {
   return (
-    <RecipeSearch />
+    <RecipeSearch/>
   )
 }
 
