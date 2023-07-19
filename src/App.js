@@ -2,7 +2,7 @@ import './App.css';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { useState } from 'react';
-import { Alert, Form, InputGroup } from 'react-bootstrap';
+import { Accordion, Alert, Form, InputGroup } from 'react-bootstrap';
 import { BiChevronDown, BiRestaurant, BiFoodMenu } from "react-icons/bi";
 
 function RecipeCard({ recipe, index, recipeNumber }) {
@@ -153,6 +153,56 @@ function RecipeSearch() {
               <Button variant='outline-primary' onClick={searchRecipes}><BiRestaurant/> Search</Button>
             </InputGroup>
           </div>
+
+          <div className='options'>
+            <Accordion className='options-accordion'>
+              <Accordion.Item eventKey='0'>
+                <Accordion.Header>Options</Accordion.Header>
+                <Accordion.Body>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label>Minimum Calories</Form.Label>
+                      <Form.Control type='number'/>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Maximum Calories</Form.Label>
+                      <Form.Control type='number'/>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Minimum Carbs</Form.Label>
+                      <InputGroup>
+                        <Form.Control type='number'/>
+                        <InputGroup.Text>grams</InputGroup.Text>
+                      </InputGroup>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Maximum Carbs</Form.Label>
+                      <InputGroup>
+                        <Form.Control type='number'/>
+                        <InputGroup.Text>grams</InputGroup.Text>
+                      </InputGroup>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Minimum Protein</Form.Label>
+                      <InputGroup>
+                        <Form.Control type='number'/>
+                        <InputGroup.Text>grams</InputGroup.Text>
+                      </InputGroup>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Maximum Protein</Form.Label>
+                      <InputGroup>
+                        <Form.Control type='number'/>
+                        <InputGroup.Text>grams</InputGroup.Text>
+                      </InputGroup>
+                    </Form.Group>
+
+                  </Form>
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
+          </div>
+
           <div className='api-alert'>
             <Alert variant='primary' show={apiLimitReached}>The Recipe API has exceeded it's maximum number of requests today. Sorry!</Alert>
           </div>
