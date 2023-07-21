@@ -61,13 +61,32 @@ function RecipeSearch() {
   const [showMoreRes, setShowMoreRes] = useState(false);
   const [apiLimitReached, setApiLimitReached] = useState(false);
 
+  const [minCalories, setMinCalories] = useState(NaN);
+  const [maxCalories, setMaxCalories] = useState(NaN);
+  const [minCarbs, setMinCarbs] = useState(NaN);
+  const [maxCarbs, setMaxCarbs] = useState(NaN);
+  const [minProtein, setMinProtein] = useState(NaN);
+  const [maxProtein, setMaxProtein] = useState(NaN);
+  const [savedOptionsStr, setSavedOptionsStr] = useState("");
+
   const addRecipeInformation = true;
 
   function searchRecipes(){
     setRecipeData([]);
     setShowMoreRes(false);
+
+    let options = "";
+    if(!isNaN(minCalories)) options += '&minCalories=' + minCalories;
+    if(!isNaN(maxCalories)) options += '&maxCalories=' + maxCalories;
+    if(!isNaN(minCarbs)) options += '&minCarbs=' + minCarbs;
+    if(!isNaN(maxCarbs)) options += '&maxCarbs=' + maxCarbs;
+    if(!isNaN(minProtein)) options += '&minProtein=' + minProtein;
+    if(!isNaN(maxProtein))  options += '&maxProtein=' + maxProtein;
+
+    setSavedOptionsStr(options);
+
     fetch(
-      'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + searchInput + '&addRecipeInformation=' + addRecipeInformation + '&number=' + recipeNumber
+      'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + searchInput + '&addRecipeInformation=' + addRecipeInformation + '&number=' + recipeNumber + options
     )
     .then(response => response.json())
     .then(data => {
@@ -99,7 +118,7 @@ function RecipeSearch() {
       number = recipeNumRes - recipeData.length;
     }
     fetch(
-      'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + savedSearch + '&addRecipeInformation=' + addRecipeInformation + '&number=' + number + '&offset=' + offset
+      'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + savedSearch + '&addRecipeInformation=' + addRecipeInformation + '&number=' + number + '&offset=' + offset + savedOptionsStr
     )
     .then(response => response.json())
     .then(data => {
@@ -133,15 +152,39 @@ function RecipeSearch() {
     }
   }
 
-  const onSearchChange = (e) => {
-    setSearchInput(e.target.value);
-  }
-
   let showMore = null;
   if(showMoreRes){
     showMore = <div className='more-results'>
                   <Button className='more-results-button' variant='light' onClick={moreResults}>More results <BiChevronDown/></Button>
                 </div>
+  }
+
+  const onSearchChange = (e) => {
+    setSearchInput(e.target.value);
+  }
+
+  const onMinCalories = (e) => {
+    setMinCalories(parseFloat(e.target.value));
+  }
+
+  const onMaxCalories = (e) => {
+    setMaxCalories(parseFloat(e.target.value));
+  }
+
+  const onMinCarbs = (e) => {
+    setMinCarbs(parseFloat(e.target.value));
+  }
+
+  const onMaxCarbs = (e) => {
+    setMaxCarbs(parseFloat(e.target.value));
+  }
+
+  const onMinProtein = (e) => {
+    setMinProtein(parseFloat(e.target.value));
+  }
+
+  const onMaxProtein = (e) => {
+    setMaxProtein(parseFloat(e.target.value));
   }
 
   return (
@@ -162,41 +205,40 @@ function RecipeSearch() {
                   <Form>
                     <Form.Group>
                       <Form.Label>Minimum Calories</Form.Label>
-                      <Form.Control type='number'/>
+                      <Form.Control type='number' onChange={onMinCalories}/>
                     </Form.Group>
                     <Form.Group>
                       <Form.Label>Maximum Calories</Form.Label>
-                      <Form.Control type='number'/>
+                      <Form.Control type='number' onChange={onMaxCalories}/>
                     </Form.Group>
                     <Form.Group>
                       <Form.Label>Minimum Carbs</Form.Label>
                       <InputGroup>
-                        <Form.Control type='number'/>
+                        <Form.Control type='number' onChange={onMinCarbs}/>
                         <InputGroup.Text>grams</InputGroup.Text>
                       </InputGroup>
                     </Form.Group>
                     <Form.Group>
                       <Form.Label>Maximum Carbs</Form.Label>
                       <InputGroup>
-                        <Form.Control type='number'/>
+                        <Form.Control type='number' onChange={onMaxCarbs}/>
                         <InputGroup.Text>grams</InputGroup.Text>
                       </InputGroup>
                     </Form.Group>
                     <Form.Group>
                       <Form.Label>Minimum Protein</Form.Label>
                       <InputGroup>
-                        <Form.Control type='number'/>
+                        <Form.Control type='number' onChange={onMinProtein}/>
                         <InputGroup.Text>grams</InputGroup.Text>
                       </InputGroup>
                     </Form.Group>
                     <Form.Group>
                       <Form.Label>Maximum Protein</Form.Label>
                       <InputGroup>
-                        <Form.Control type='number'/>
+                        <Form.Control type='number' onChange={onMaxProtein}/>
                         <InputGroup.Text>grams</InputGroup.Text>
                       </InputGroup>
                     </Form.Group>
-
                   </Form>
                 </Accordion.Body>
               </Accordion.Item>
