@@ -67,6 +67,8 @@ function RecipeSearch() {
   const [maxCarbs, setMaxCarbs] = useState(NaN);
   const [minProtein, setMinProtein] = useState(NaN);
   const [maxProtein, setMaxProtein] = useState(NaN);
+  const [minFat, setMinFat] = useState(NaN);
+  const [maxFat, setMaxFat] = useState(NaN);
   const [savedOptionsStr, setSavedOptionsStr] = useState("");
 
   const addRecipeInformation = true;
@@ -81,12 +83,14 @@ function RecipeSearch() {
     if(!isNaN(minCarbs)) options += '&minCarbs=' + minCarbs;
     if(!isNaN(maxCarbs)) options += '&maxCarbs=' + maxCarbs;
     if(!isNaN(minProtein)) options += '&minProtein=' + minProtein;
-    if(!isNaN(maxProtein))  options += '&maxProtein=' + maxProtein;
+    if(!isNaN(maxProtein)) options += '&maxProtein=' + maxProtein;
+    if(!isNaN(minFat)) options += '&minFat=' + minFat;
+    if(!isNaN(maxFat)) options += '&maxFat=' + maxFat; 
 
     setSavedOptionsStr(options);
 
     fetch(
-      'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + searchInput + '&addRecipeInformation=' + addRecipeInformation + '&number=' + recipeNumber + options
+      `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_SPOONACULAR_KEY}&query=${searchInput}&addRecipeInformation=${addRecipeInformation}&number=${recipeNumber}${options}`
     )
     .then(response => response.json())
     .then(data => {
@@ -118,7 +122,7 @@ function RecipeSearch() {
       number = recipeNumRes - recipeData.length;
     }
     fetch(
-      'https://api.spoonacular.com/recipes/complexSearch?apiKey=943dbaebed0b4e34b6e70ebf3284efbb&query=' + savedSearch + '&addRecipeInformation=' + addRecipeInformation + '&number=' + number + '&offset=' + offset + savedOptionsStr
+      `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_SPOONACULAR_KEY}&query=${savedSearch}&addRecipeInformation=${addRecipeInformation}&number=${number}&offset=${offset}${savedOptionsStr}`
     )
     .then(response => response.json())
     .then(data => {
@@ -187,9 +191,18 @@ function RecipeSearch() {
     setMaxProtein(parseFloat(e.target.value));
   }
 
+  const onMinFat = (e) => {
+    setMinFat(parseFloat(e.target.value));
+  }
+
+  const onMaxFat = (e) => {
+    setMaxFat(parseFloat(e.target.value));
+  }
+
   return (
       <>
         <div className='search-bar-container'>
+          <h1 className='app-title'>Recipe Search</h1>
           <div className='search-bar'>
             <InputGroup className='search'>
               <Form.Control placeholder='Recipe Search' aria-label='Recipe Search' onChange={onSearchChange} onKeyUp={(key) => searchKeyPress(key)}/>
@@ -236,6 +249,20 @@ function RecipeSearch() {
                       <Form.Label>Maximum Protein</Form.Label>
                       <InputGroup>
                         <Form.Control type='number' onChange={onMaxProtein}/>
+                        <InputGroup.Text>grams</InputGroup.Text>
+                      </InputGroup>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Minimum Fat</Form.Label>
+                      <InputGroup>
+                        <Form.Control type='number' onChange={onMinFat}/>
+                        <InputGroup.Text>grams</InputGroup.Text>
+                      </InputGroup>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Maximum Fat</Form.Label>
+                      <InputGroup>
+                        <Form.Control type='number' onChange={onMaxFat}/>
                         <InputGroup.Text>grams</InputGroup.Text>
                       </InputGroup>
                     </Form.Group>

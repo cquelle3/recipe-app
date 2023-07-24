@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Sacramento&display=swap');
+
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -5,6 +7,10 @@
   100% {
     opacity: 1;
   }
+}
+
+.app-title{
+  font-family: 'Sacramento', cursive;
 }
 
 .recipe-card{
@@ -23,6 +29,7 @@
 }
 
 .search-bar{
+  padding-top: 1rem;
   width: 50% !important;
 }
 
