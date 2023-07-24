@@ -1,7 +1,7 @@
 import './App.css';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Accordion, Alert, Form, InputGroup } from 'react-bootstrap';
 import { BiChevronDown, BiRestaurant, BiFoodMenu } from "react-icons/bi";
 
@@ -199,10 +199,23 @@ function RecipeSearch() {
     setMaxFat(parseFloat(e.target.value));
   }
 
+  //used to check if we scroll past the title
+  //triggers box shadow for header is css
+  useEffect(() => {
+    const header = document.getElementById('header');
+    const intercept = document.getElementById('title');
+    const observer = new IntersectionObserver(([entry]) => {
+      header.classList.toggle('active', !entry.isIntersecting);
+    });
+    observer.observe(intercept);
+  });
+
   return (
       <>
-        <div className='search-bar-container'>
+        <div className='title-container' id='title'>
           <h1 className='app-title'>Recipe Search</h1>
+        </div>
+        <div className='search-bar-container' id='header'>
           <div className='search-bar'>
             <InputGroup className='search'>
               <Form.Control placeholder='Recipe Search' aria-label='Recipe Search' onChange={onSearchChange} onKeyUp={(key) => searchKeyPress(key)}/>

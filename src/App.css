@@ -9,6 +9,14 @@
   }
 }
 
+.title-container{
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding-top: 1rem;
+}
+
 .app-title{
   font-family: 'Sacramento', cursive;
 }
@@ -19,13 +27,22 @@
 }
 
 .search-bar-container{
-  padding-top: 4rem;
+  position: sticky;
+  position: -webkit-sticky;
+  z-index: 2;
+  top: 0rem;
+  background-color: white;
+
   width: 100%;
   height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.search-bar-container.active{
+  box-shadow: 0 0.2rem 0.25rem 0 rgba(0, 0, 0, 0.089);
 }
 
 .search-bar{
