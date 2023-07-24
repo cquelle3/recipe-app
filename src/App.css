@@ -99,7 +99,6 @@
 }
 
 .more-results-button{
-  border-radius: 50%;
   width: clamp(15rem, 30%, 30rem) !important;
 }
 
