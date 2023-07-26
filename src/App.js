@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card';
 import { useEffect, useState } from 'react';
 import { Accordion, Alert, Form, InputGroup } from 'react-bootstrap';
 import { BiChevronDown, BiRestaurant, BiFoodMenu } from "react-icons/bi";
+import DOMPurify from 'dompurify';
 
 function RecipeCard({ recipe, index, recipeNumber }) {
   const animDuration = 500;
@@ -22,7 +23,7 @@ function RecipeCard({ recipe, index, recipeNumber }) {
           <Card.Header>{recipe['title']}</Card.Header>
           <Card.Img src={recipe['image']}></Card.Img>
           <Card.Body>
-            <Card.Text dangerouslySetInnerHTML={{ __html: recipe['summary'] }}>
+            <Card.Text dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(recipe['summary']) }}>
             </Card.Text>
             <a href={recipe['sourceUrl']} target='_blank' rel='noreferrer'>
               <Button variant='primary'>Recipe <BiFoodMenu/></Button>
