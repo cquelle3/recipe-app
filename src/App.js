@@ -2,7 +2,7 @@ import './App.css';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { useEffect, useState } from 'react';
-import { Accordion, Alert, Form, InputGroup } from 'react-bootstrap';
+import { Accordion, Alert, Form, InputGroup, Spinner } from 'react-bootstrap';
 import { BiChevronDown, BiRestaurant, BiFoodMenu } from "react-icons/bi";
 import DOMPurify from 'dompurify';
 
@@ -72,9 +72,13 @@ function RecipeSearch() {
   const [maxFat, setMaxFat] = useState(NaN);
   const [savedOptionsStr, setSavedOptionsStr] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const addRecipeInformation = true;
 
   function searchRecipes(){
+    setLoading(true);
+
     setRecipeData([]);
     setShowMoreRes(false);
 
@@ -109,14 +113,18 @@ function RecipeSearch() {
       else{
         setApiLimitReached(true);
       }
+      setLoading(false);
     })
     .catch((error) => {
       console.log(error);
       console.log("error getting recipe data")
+      setLoading(false);
     });
   }
 
   function moreResults(){
+    setLoading(true);
+
     let offset = recipeNumber * (moreResCount + 1); 
     let number = recipeNumber;
     if(recipeNumRes - recipeData.length < recipeNumber){
@@ -127,6 +135,7 @@ function RecipeSearch() {
     )
     .then(response => response.json())
     .then(data => {
+      console.log(data);
       if(data['code'] !== 402){
         let newData = recipeData.concat(data['results']); 
         setRecipeData(newData);
@@ -144,10 +153,12 @@ function RecipeSearch() {
       else{
         setApiLimitReached(true);
       }
+      setLoading(false);
     })
     .catch((error) => {
       console.log(error);
       console.log("error getting recipe data")
+      setLoading(false);
     });
   }
 
@@ -158,9 +169,22 @@ function RecipeSearch() {
   }
 
   let showMore = null;
-  if(showMoreRes){
+  if(showMoreRes && !loading){
     showMore = <div className='more-results'>
+                  <p>{recipeData.length} of {recipeNumRes}</p>
                   <Button className='more-results-button' variant='light' onClick={moreResults}>More results <BiChevronDown/></Button>
+                </div>
+  }
+  else if(!showMoreRes && recipeData.length > 0){
+    showMore = <div className='more-results'>
+                  <p>{recipeData.length} of {recipeNumRes}</p>
+               </div>
+  }
+
+  let loadIcon = null;
+  if(loading){
+    loadIcon = <div className='load-spinner'>
+                  <Spinner animation="border" variant="primary" />
                 </div>
   }
 
@@ -293,6 +317,7 @@ function RecipeSearch() {
 
         <RecipeResults recipeData={recipeData} recipeNumber={recipeNumber}/>
 
+        {loadIcon}        
         {showMore}
       </>
   )
