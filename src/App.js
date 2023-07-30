@@ -78,7 +78,7 @@ function RecipeSearch() {
 
   function searchRecipes(){
     setLoading(true);
-
+    setMoreResCount(0);
     setRecipeData([]);
     setShowMoreRes(false);
 
@@ -130,12 +130,12 @@ function RecipeSearch() {
     if(recipeNumRes - recipeData.length < recipeNumber){
       number = recipeNumRes - recipeData.length;
     }
+
     fetch(
       `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_SPOONACULAR_KEY}&query=${savedSearch}&addRecipeInformation=${addRecipeInformation}&number=${number}&offset=${offset}${savedOptionsStr}`
     )
     .then(response => response.json())
     .then(data => {
-      console.log(data);
       if(data['code'] !== 402){
         let newData = recipeData.concat(data['results']); 
         setRecipeData(newData);
